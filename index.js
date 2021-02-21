@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
   user: 'root',
-  password: '****',
+  password: 'HellMouthHere@96',
   database: 'employee_tracker_db',
 })
 
@@ -77,7 +77,10 @@ const getEmployees = () => {
     })
 }
 
-const addEmployee = () => {}
+const addEmployee = (err, res) => {
+    if (err) throw err
+    inquirer.prompt(employeeQuestions)
+}
 
 const getDepartments = () => {
     const query = 'SELECT * FROM departments'
