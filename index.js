@@ -1,13 +1,14 @@
 // dependencies
 const inquirer = require('inquirer')
 const mysql = require('mysql')
+let {employeeQuestions, roleQuestions, deptQuestions} = require('./questions')
 
 // db connection
 const connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
   user: 'root',
-  password: 'HellMouthHere@96',
+  password: '****',
   database: 'employee_tracker_db',
 })
 
