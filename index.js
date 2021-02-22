@@ -1,7 +1,7 @@
 // dependencies
 const inquirer = require('inquirer')
 const mysql = require('mysql')
-let {employeeQuestions, roleQuestions, deptQuestions} = require('./questions')
+// let {employeeQuestions, roleQuestions, deptQuestions} = require('./questions')
 
 // db connection
 const connection = mysql.createConnection({
@@ -80,6 +80,17 @@ const getEmployees = () => {
 const addEmployee = (err, res) => {
     if (err) throw err
     inquirer.prompt(employeeQuestions)
+    .then((res)=>{
+        const query = 'INSERT INTO employees SET ?'
+        connection.query(query, 
+        {
+            first_name: res.first_name,
+            last_name: res.last_name,
+        },
+        (err, res)=>{
+
+        })
+    })
 }
 
 const getDepartments = () => {
@@ -91,7 +102,23 @@ const getDepartments = () => {
     })
 }
 
-const addDepartment = () => {}
+let departments = []
+
+const addDepartment = () => {
+    inquirer.prompt({
+        type: "input",
+        message: "What is the department's name?",
+        name: "addDept"
+    })
+    .then((res)=>{
+        const query = 'INSERT INTO departments (dept_name) VALUES (?)'
+        connection.query(query, res.addDept, (err, res)=>
+        { if (err) throw err
+
+        getDepartments(res)
+        })
+    })
+}
 
 const getRoles = () => {
     const query = 'SELECT title, salary FROM roles INNER JOIN departments ON roles.dept_id = departments.id'
