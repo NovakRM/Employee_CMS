@@ -143,7 +143,6 @@ const addDepartment = () => {
         const query = 'INSERT INTO departments (dept_name) VALUES (?)'
         connection.query(query, res.addDept, (err, res)=>{ 
             if (err) throw err
-
         getDepartments(res)
         })
     })
@@ -158,49 +157,49 @@ const getRoles = () => {
     })
 }
 
+
 const addRole = () => {
-    inquirer.prompt([
-    {
-        type: "input",
-        message: "What is the role's title?",
-        name: "title"
-    },
-    {
-        type: "input",
-        message: "What is the role salary?",
-        name: "salary"
-    },
-    {
-        type: "list",
-        message: "What department is it in?",
-        name: "dept_name",
-        choices(){
-            return new Promise((resolve, reject)=>{ //need this to fire asynchronously
-                connection.query('SELECT dept_name FROM departments', (err,res)=>{
-                    let departments = [];
-                    res.forEach(({dept_name})=>{ //mapping object? 
-                        departments.push(dept_name)
-                    })
-                    resolve(departments);
-                })
-            })
-        },
-    }
-    ])
-    .then((answer)=>{
-        const query = 'SELECT departments.id FROM departments WHERE ?'
-            connection.query(query, {dept_name: answer.dept_name}, (err, res) => {    
-                console.log(res[0].id)
-                let deptID = res[0].id
+        let deptArray = []
+        const query = 'SELECT departments.dept_name FROM departments'
+        connection.query(query, (err, res) => {
+                if (err) throw err
+                for(i=0;i<res.length; i++){
+                    deptArray.push(res[i].dept_name)
+                }
             
-                // console.log(answer.title, answer.salary, deptID)
-                const query = 'INSERT INTO roles (title, salary, dept_id) VALUES (?)'
-                let values = [answer.title, answer.salary, deptID]
-                connection.query(query, [values], (err,res) => {
-                    if (err) throw err
-                console.table(res)
-                initApp() 
-             })
-         })      
+            inquirer.prompt([
+            {
+                type: "input",
+                message: "What is the role's title?",
+                name: "title"
+            },
+            {
+                type: "input",
+                message: "What is the role salary?",
+                name: "salary"
+            },
+            {
+                type: "list",
+                message: "What department is it in?",
+                name: "dept_name",
+                choices: deptArray
+            }
+        ])
+        .then((answer)=>{
+            const query = 'SELECT departments.id FROM departments WHERE ?'
+                connection.query(query, {dept_name: answer.dept_name}, (err, res) => {    
+                    console.log(res[0].id)
+                    let deptID = res[0].id
+                
+                    // console.log(answer.title, answer.salary, deptID)
+                    const query = 'INSERT INTO roles (title, salary, dept_id) VALUES (?)'
+                    let values = [answer.title, answer.salary, deptID]
+                    connection.query(query, [values], (err,res) => {
+                        if (err) throw err
+                    console.table(res)
+                    initApp() 
+                })
+            })      
+        })
     })
 }
