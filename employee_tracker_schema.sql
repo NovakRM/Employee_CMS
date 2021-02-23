@@ -17,6 +17,8 @@ CREATE TABLE roles (
   PRIMARY KEY (id)
 );
 
+SELECT dept_name FROM departments;
+
 CREATE TABLE employees (
   id INT NOT NULL auto_increment,
   first_name VARCHAR(30),
@@ -65,3 +67,7 @@ VALUES
 
 SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.dept_name 
 FROM employees INNER JOIN roles ON employees.role_id=roles.id INNER JOIN departments ON roles.dept_id=departments.id;
+
+SELECT dept_name FROM departments;
+
+INSERT INTO employees (first_name, last_name, role_id) VALUES (?,?,?)
